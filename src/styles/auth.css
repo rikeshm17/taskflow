@@ -1,0 +1,101 @@
+.auth-page{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:var(--background);
+
+    padding:30px;
+}
+
+.auth-card{
+
+    width:430px;
+
+    background:var(--card);
+
+    padding:40px;
+
+    border-radius:18px;
+
+    box-shadow:var(--shadow);
+
+    transition:.3s;
+}
+
+.auth-card:hover{
+
+    transform:translateY(-3px);
+}
+
+.auth-title{
+
+    font-size:2rem;
+
+    margin-bottom:30px;
+
+    color:var(--primary);
+
+    font-weight:700;
+}
+
+.auth-input{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-bottom:18px;
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    outline:none;
+
+    transition:.25s;
+}
+
+.auth-input:focus{
+
+    border-color:var(--accent);
+
+    box-shadow:0 0 0 3px rgba(252,86,60,.15);
+}
+
+.auth-btn{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--accent);
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:600;
+}
+
+.auth-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:#ff684f;
+}
+.auth-subtitle{
+    color: var(--secondary);
+    margin-bottom: 25px;
+    font-size: 15px;
+    line-height: 1.5;
+}
