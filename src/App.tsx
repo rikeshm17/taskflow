@@ -30,9 +30,9 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
-      <Route path="*" element={<Navigate to="/signup" replace />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

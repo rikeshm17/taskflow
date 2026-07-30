@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { supabase } from "../services/supabase";
 import "../styles/auth.css";
@@ -72,6 +73,10 @@ function Signup() {
             Create Account
           </button>
         </form>
+
+        <p className="auth-footer">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </div>
     </div>
   );
