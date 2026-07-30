@@ -12,6 +12,7 @@ import "../styles/export.css";
 
 function ExportPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadTasks();
@@ -29,6 +30,8 @@ function ExportPage() {
     if (data) {
       setTasks(data);
     }
+
+    setLoading(false);
   }
 
   return (
@@ -42,15 +45,24 @@ function ExportPage() {
 
       <div className="export-buttons">
 
-        <button onClick={() => exportToPDF(tasks)}>
+        <button 
+          onClick={() => exportToPDF(tasks)}
+          disabled={loading}
+        >
           Export PDF
         </button>
 
-        <button onClick={() => exportToExcel(tasks)}>
+        <button 
+          onClick={() => exportToExcel(tasks)}
+          disabled={loading}
+        >
           Export Excel
         </button>
 
-        <button onClick={() => exportToCSV(tasks)}>
+        <button 
+          onClick={() => exportToCSV(tasks)}
+          disabled={loading}
+        >
           Export CSV
         </button>
 

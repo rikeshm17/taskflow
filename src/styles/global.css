@@ -23,8 +23,22 @@ button{
     font-family:inherit;
 }
 
+button:hover{
+    transform:translateY(-1px);
+}
+
+button:active{
+    transform:translateY(0) scale(0.98);
+}
+
 input{
     font-family:inherit;
+}
+
+input:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(252,86,60,.15);
 }
 
 div,
@@ -87,4 +101,99 @@ img {
   html {
     font-size: 13px;
   }
+}
+
+/* =========================
+   Skeleton Loading
+========================= */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--border) 25%,
+    var(--background) 50%,
+    var(--border) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: var(--radius);
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-text {
+  height: 14px;
+  margin-bottom: 10px;
+}
+
+.skeleton-text.short {
+  width: 60%;
+}
+
+.skeleton-number {
+  height: 42px;
+  width: 80px;
+  margin-top: 10px;
+}
+
+.skeleton-card {
+  height: 120px;
+  width: 100%;
+}
+
+.skeleton-card-task {
+  height: auto;
+  min-height: 120px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* =========================
+   Minimal Animations
+========================= */
+
+.card,
+.task-card,
+.productivity-card,
+.kanban-card,
+.settings-section,
+.chart-card,
+.auth-card,
+.export-page,
+.ai-page,
+.profile-card {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover,
+.task-card:hover,
+.productivity-card:hover,
+.kanban-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px rgba(0,0,0,.12);
+}
+
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width .2s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
 }

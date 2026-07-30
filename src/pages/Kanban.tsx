@@ -11,6 +11,7 @@ type Status = typeof COLUMNS[number];
 function Kanban() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [userEmail, setUserEmail] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadTasks();
@@ -34,6 +35,8 @@ function Kanban() {
     if (data) {
       setTasks(data as Task[]);
     }
+
+    setLoading(false);
   }
 
   async function logout() {
@@ -72,7 +75,35 @@ function Kanban() {
       </section>
 
       <section className="kanban-board">
-        {COLUMNS.map((status) => (
+        {loading ? (
+          COLUMNS.map((status) => (
+            <div key={status} className="kanban-column">
+              <div className="kanban-header">
+                <h3>
+                  {status === "todo"
+                    ? "📌 To Do"
+                    : status === "in-progress"
+                    ? "🚧 In Progress"
+                    : "✅ Done"}
+                </h3>
+                <span>
+                  <div className="skeleton" style={{ width: 24, height: 20, borderRadius: 999 }} />
+                </span>
+              </div>
+
+              <div className="kanban-cards">
+                {[1, 2].map((i) => (
+                  <div key={i} className="kanban-card">
+                    <div className="skeleton skeleton-text" style={{ width: "80%" }} />
+                    <div className="skeleton skeleton-text short" />
+                    <div className="skeleton skeleton-text" style={{ width: "40%" }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        ) : (
+          COLUMNS.map((status) => (
           <div key={status} className="kanban-column">
             <div className="kanban-header">
               <h3>
@@ -141,7 +172,7 @@ function Kanban() {
               )}
             </div>
           </div>
-        ))}
+        )))}
       </section>
     </div>
   );

@@ -22,6 +22,7 @@ import ProductivityStats from "../components/ProductivityStats";
 
 function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("Medium");
@@ -72,6 +73,8 @@ function Dashboard() {
     if (data) {
       setTasks(data as Task[]);
     }
+
+    setLoading(false);
   }
 
   async function handleAddTask(e: React.FormEvent) {
@@ -234,6 +237,7 @@ function Dashboard() {
         total={tasks.length}
         completed={completed}
         pending={pending}
+        loading={loading}
       />
 
       <ProgressBar completed={completed} total={tasks.length} />
@@ -242,11 +246,13 @@ function Dashboard() {
         highPriority={highPriority}
         overdue={overdue}
         completionRate={completionRate}
+        loading={loading}
       />
 
       <TaskChart
         completed={completed}
         pending={pending}
+        loading={loading}
       />
 
       <TaskForm
@@ -291,6 +297,7 @@ function Dashboard() {
         onSearchChange={setSearch}
         onFilterChange={setFilter}
         onCategoryFilterChange={setCategoryFilter}
+        loading={loading}
       />
     </div>
   );

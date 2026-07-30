@@ -9,11 +9,13 @@ import {
 interface TaskChartProps {
   completed: number;
   pending: number;
+  loading?: boolean;
 }
 
 function TaskChart({
   completed,
   pending,
+  loading = false,
 }: TaskChartProps) {
 
   const data = [
@@ -27,25 +29,29 @@ function TaskChart({
     <section className="chart-card">
       <h2>Task Completion</h2>
 
-      <ResponsiveContainer width="100%" height={320}>
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            outerRadius={110}
-            label
-          >
-            {data.map((_, index) => (
-              <Cell
-                key={index}
-                fill={COLORS[index]}
-              />
-            ))}
-          </Pie>
+      {loading ? (
+        <div className="skeleton" style={{ height: 320 }} />
+      ) : (
+        <ResponsiveContainer width="100%" height={320}>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              outerRadius={110}
+              label
+            >
+              {data.map((_, index) => (
+                <Cell
+                  key={index}
+                  fill={COLORS[index]}
+                />
+              ))}
+            </Pie>
 
-          <Tooltip />
-        </PieChart>
-      </ResponsiveContainer>
+            <Tooltip />
+          </PieChart>
+        </ResponsiveContainer>
+      )}
     </section>
   );
 }

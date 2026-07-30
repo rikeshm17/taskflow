@@ -13,6 +13,7 @@ interface TaskListProps {
   onSearchChange: (value: string) => void;
   onFilterChange: (value: string) => void;
   onCategoryFilterChange: (value: string) => void;
+  loading?: boolean;
 }
 
 function TaskList({
@@ -26,6 +27,7 @@ function TaskList({
   onSearchChange,
   onFilterChange,
   onCategoryFilterChange,
+  loading = false,
 }: TaskListProps) {
   return (
     <section className="task-list">
@@ -44,7 +46,15 @@ function TaskList({
         <span>{filteredTasks.length} Tasks</span>
       </div>
 
-      {filteredTasks.length === 0 ? (
+      {loading ? (
+        Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="task-card skeleton-card-task">
+            <div className="skeleton skeleton-text" style={{ width: "70%" }} />
+            <div className="skeleton skeleton-text short" />
+            <div className="skeleton skeleton-text" style={{ width: "40%" }} />
+          </div>
+        ))
+      ) : filteredTasks.length === 0 ? (
         <div className="empty-state">
           <h2>📋</h2>
 

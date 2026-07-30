@@ -8,6 +8,7 @@ import "../styles/dashboard.css";
 function Analytics() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [userEmail, setUserEmail] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadTasks();
@@ -30,6 +31,8 @@ function Analytics() {
     if (data) {
       setTasks(data as Task[]);
     }
+
+    setLoading(false);
   }
 
   async function logout() {
@@ -60,27 +63,38 @@ function Analytics() {
 
       <section className="cards">
 
-        <div className="card">
-          <h2>Total Tasks</h2>
-          <div className="number">{total}</div>
-        </div>
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="card">
+              <div className="skeleton skeleton-text" style={{ width: "60%" }} />
+              <div className="skeleton skeleton-number" />
+            </div>
+          ))
+        ) : (
+          <>
+            <div className="card">
+              <h2>Total Tasks</h2>
+              <div className="number">{total}</div>
+            </div>
 
-        <div className="card">
-          <h2>Completed</h2>
-          <div className="number">{completed}</div>
-        </div>
+            <div className="card">
+              <h2>Completed</h2>
+              <div className="number">{completed}</div>
+            </div>
 
-        <div className="card">
-          <h2>Pending</h2>
-          <div className="number">{pending}</div>
-        </div>
+            <div className="card">
+              <h2>Pending</h2>
+              <div className="number">{pending}</div>
+            </div>
 
-        <div className="card">
-          <h2>Completion</h2>
-          <div className="number">
-            {completionRate}%
-          </div>
-        </div>
+            <div className="card">
+              <h2>Completion</h2>
+              <div className="number">
+                {completionRate}%
+              </div>
+            </div>
+          </>
+        )}
 
       </section>
 

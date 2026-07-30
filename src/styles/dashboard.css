@@ -29,7 +29,7 @@
 }
 
 .nav-link:hover {
-    color: #172A39;
+    color: white;
 }
 
 .nav-link.active {
@@ -447,7 +447,7 @@
 }
 
 .nav-link:hover {
-  color: var(--primary);
+  color: white;
 }
 
 .nav-link.active {
