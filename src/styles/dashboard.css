@@ -672,3 +672,133 @@
 .notification-actions button:last-child {
     background: var(--secondary);
 }
+/* ===========================
+   Responsive Design
+=========================== */
+
+@media (max-width: 1024px){
+
+    .navbar{
+        padding:0 25px;
+    }
+
+    .hero,
+    .cards,
+    .progress-section,
+    .task-form,
+    .task-list{
+        width:95%;
+    }
+
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media (max-width:768px){
+
+    .navbar{
+        display:flex;
+        flex-direction:column;
+        gap:15px;
+        height:auto;
+        padding:20px;
+    }
+
+    .nav-links{
+        flex-wrap:wrap;
+        justify-content:center;
+        gap:16px;
+    }
+
+    .nav-right{
+        width:100%;
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .hero{
+        text-align:center;
+        margin-top:25px;
+    }
+
+    .hero h1{
+        font-size:32px;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .task-card{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    .task-actions{
+        width:100%;
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .task-actions button{
+        width:100%;
+    }
+
+    .search-filter{
+        flex-direction:column;
+    }
+
+    .search-filter input,
+    .search-filter select{
+        width:100%;
+    }
+
+    .task-header{
+        flex-direction:column;
+        gap:10px;
+        align-items:flex-start;
+    }
+
+    .progress-header{
+        flex-direction:column;
+        gap:10px;
+        align-items:flex-start;
+    }
+
+}
+
+@media (max-width:480px){
+
+    .hero h1{
+        font-size:26px;
+    }
+
+    .card{
+        padding:22px;
+    }
+
+    .task-form{
+        padding:20px;
+    }
+
+    .task-card{
+        padding:16px;
+    }
+
+    .task-actions{
+        grid-template-columns:1fr;
+    }
+
+    .notification-panel{
+        width:95vw;
+        right:-15px;
+    }
+
+    .logout-btn{
+        width:100%;
+    }
+
+}
