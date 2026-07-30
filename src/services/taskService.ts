@@ -15,6 +15,7 @@ export async function addTask(task: {
   description: string;
   priority: string;
   category: string;
+  status: string;
   due_date: string | null;
   repeat_type: string;
   user_id: string;

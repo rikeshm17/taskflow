@@ -42,6 +42,42 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
         >
           Profile
         </NavLink>
+
+        <NavLink
+          to="/kanban"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          Kanban
+        </NavLink>
+
+        <NavLink
+          to="/settings"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          Settings
+        </NavLink>
+
+        <NavLink
+          to="/calendar"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          Calendar
+        </NavLink>
+
+        <NavLink
+          to="/export"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          Export
+        </NavLink>
       </div>
 
       <div className="nav-right">

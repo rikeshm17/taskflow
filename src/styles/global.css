@@ -46,6 +46,10 @@ select,
         transform .25s ease;
 
 }
+#root {
+  min-height: 100vh;
+}
+
 /* =========================
    Responsive Base Styles
 ========================= */

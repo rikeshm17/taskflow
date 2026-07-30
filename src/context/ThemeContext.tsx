@@ -24,12 +24,20 @@ export function ThemeProvider({
   children: ReactNode;
 }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem("theme") as Theme) || "light";
+    try {
+      return (localStorage.getItem("theme") as Theme) || "light";
+    } catch {
+      return "light";
+    }
   });
 
   useEffect(() => {
-    document.body.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+    try {
+      document.body.setAttribute("data-theme", theme);
+      localStorage.setItem("theme", theme);
+    } catch {
+      document.body.setAttribute("data-theme", theme);
+    }
   }, [theme]);
 
   function toggleTheme() {

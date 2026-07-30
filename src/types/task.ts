@@ -7,4 +7,5 @@ export type Task = {
   due_date: string | null;
   repeat_type: string;
   category: string;
+  status: string;
 };

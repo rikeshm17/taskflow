@@ -37,6 +37,25 @@ function Dashboard() {
   useEffect(() => {
     loadTasks();
     requestNotificationPermission();
+
+    const channel = supabase
+      .channel("tasks-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "tasks",
+        },
+        () => {
+          loadTasks();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   async function loadTasks() {
@@ -69,6 +88,7 @@ function Dashboard() {
       description,
       priority,
       category,
+      status: "todo",
       due_date: dueDate || null,
       repeat_type: repeatType,
       user_id: user.id,

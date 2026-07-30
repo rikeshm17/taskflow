@@ -21,9 +21,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-    });
+    supabase.auth.getSession()
+      .then(({ data }) => {
+        setSession(data.session);
+      })
+      .catch(() => {
+        setSession(null);
+      });
 
     const {
       data: { subscription },
