@@ -14,26 +14,11 @@ function TaskCard({ task, onComplete, onEdit, onDelete }: TaskCardProps) {
     new Date(task.due_date) < new Date();
 
   return (
-    <div
-      className={`task-card ${task.completed ? "completed" : ""}`}
-    >
+    <div className={`task-card ${task.completed ? "completed" : ""}`}>
       <div className="task-info">
         <h3>{task.title}</h3>
 
         <p>{task.description}</p>
-
-        {task.due_date && (
-          <p className="due-date">
-            📅 Due:{" "}
-            {new Date(task.due_date).toLocaleDateString()}
-          </p>
-        )}
-
-        {isOverdue && (
-          <p className="overdue">
-            ⚠️ OVERDUE
-          </p>
-        )}
 
         <div className="task-badges">
           <span className={`priority ${task.priority.toLowerCase()}`}>
@@ -44,6 +29,10 @@ function TaskCard({ task, onComplete, onEdit, onDelete }: TaskCardProps) {
               : "🟢 Low"}
           </span>
 
+          <span className="category">
+            📂 {task.category}
+          </span>
+
           <span
             className={`status ${
               task.completed ? "done" : "pending-status"
@@ -52,6 +41,24 @@ function TaskCard({ task, onComplete, onEdit, onDelete }: TaskCardProps) {
             {task.completed ? "✅ Completed" : "⏳ Pending"}
           </span>
         </div>
+
+        {task.due_date && (
+          <p className="due-date">
+            📅 Due: {new Date(task.due_date).toLocaleDateString()}
+          </p>
+        )}
+
+        {task.repeat_type !== "None" && (
+          <p className="repeat-type">
+            🔁 Repeats: {task.repeat_type}
+          </p>
+        )}
+
+        {isOverdue && (
+          <p className="overdue">
+            ⚠️ OVERDUE
+          </p>
+        )}
       </div>
 
       <div className="task-actions">

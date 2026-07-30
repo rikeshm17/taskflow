@@ -14,6 +14,7 @@ export async function addTask(task: {
   title: string;
   description: string;
   priority: string;
+  category: string;
   due_date: string | null;
   repeat_type: string;
   user_id: string;
@@ -38,6 +39,7 @@ export async function updateTask(
     title: string;
     description: string;
     priority: string;
+    category: string;
     due_date: string | null;
     repeat_type: string;
   }

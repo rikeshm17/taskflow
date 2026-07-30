@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Analytics from "./pages/Analytics";
 
 function App() {
   const { session } = useAuth();
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/analytics" element={<Analytics />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     );
@@ -20,9 +22,9 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="*" element={<Navigate to="/signup" replace />} />
     </Routes>
   );
 }

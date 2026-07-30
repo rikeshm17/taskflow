@@ -6,4 +6,5 @@ export type Task = {
   completed: boolean;
   due_date: string | null;
   repeat_type: string;
+  category: string;
 };

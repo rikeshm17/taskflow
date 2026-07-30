@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { supabase } from "../services/supabase";
+import { useNavigate } from "react-router-dom";
 import "../styles/profile.css";
 
 type Profile = {
@@ -11,6 +13,10 @@ type Profile = {
 function Profile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [email, setEmail] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadProfile();
@@ -33,7 +39,39 @@ function Profile() {
 
     if (data) {
       setProfile(data);
+      setFullName(data.full_name || "");
     }
+  }
+
+  async function handleSave() {
+    setLoading(true);
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: fullName })
+      .eq("id", user.id);
+
+    setLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Profile updated!");
+      await loadProfile();
+      setEditing(false);
+      navigate("/");
+    }
+  }
+
+  function handleCancel() {
+    setFullName(profile?.full_name || "");
+    setEditing(false);
   }
 
   return (
@@ -44,23 +82,58 @@ function Profile() {
           {email.charAt(0).toUpperCase()}
         </div>
 
-        <h1>
-          {profile?.full_name || "No Name Yet"}
-        </h1>
+        {editing ? (
+          <>
+            <input
+              className="profile-input"
+              type="text"
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
 
-        <p>{email}</p>
+            <div className="profile-actions">
+              <button
+                className="save-btn"
+                onClick={handleSave}
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save"}
+              </button>
 
-        <p>
-          Member Since
-          <br />
-          {profile?.created_at
-            ? new Date(profile.created_at).toLocaleDateString()
-            : "-"}
-        </p>
+              <button
+                className="cancel-btn"
+                onClick={handleCancel}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h1>
+              {profile?.full_name || email}
+            </h1>
 
-        <button>
-          Edit Profile
-        </button>
+            <p>{email}</p>
+
+            <p className="member-since">
+              Member Since
+              <br />
+              {profile?.created_at
+                ? new Date(profile.created_at).toLocaleDateString()
+                : "-"}
+            </p>
+
+            <button
+              className="edit-btn"
+              onClick={() => setEditing(true)}
+            >
+              Edit Profile
+            </button>
+          </>
+        )}
 
       </div>
     </div>

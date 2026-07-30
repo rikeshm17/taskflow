@@ -9,8 +9,10 @@ interface TaskListProps {
   onDelete: (id: number) => void;
   search: string;
   filter: string;
+  categoryFilter: string;
   onSearchChange: (value: string) => void;
   onFilterChange: (value: string) => void;
+  onCategoryFilterChange: (value: string) => void;
 }
 
 function TaskList({
@@ -20,16 +22,20 @@ function TaskList({
   onDelete,
   search,
   filter,
+  categoryFilter,
   onSearchChange,
   onFilterChange,
+  onCategoryFilterChange,
 }: TaskListProps) {
   return (
     <section className="task-list">
       <SearchFilter
         search={search}
         filter={filter}
+        categoryFilter={categoryFilter}
         onSearchChange={onSearchChange}
         onFilterChange={onFilterChange}
+        onCategoryFilterChange={onCategoryFilterChange}
       />
 
       <div className="task-header">

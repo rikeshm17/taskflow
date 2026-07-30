@@ -7,6 +7,8 @@ import {
   completeTask,
   updateTask,
 } from "../services/taskService";
+import { createNotification } from "../services/notificationService";
+import { requestNotificationPermission, showBrowserNotification } from "../utils/browserNotification";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import StatsCard from "../components/StatsCard";
@@ -25,13 +27,16 @@ function Dashboard() {
   const [priority, setPriority] = useState("Medium");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
+  const [categoryFilter, setCategoryFilter] = useState("All Categories");
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [userEmail, setUserEmail] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [repeatType, setRepeatType] = useState("None");
+  const [category, setCategory] = useState("Personal");
 
   useEffect(() => {
     loadTasks();
+    requestNotificationPermission();
   }, []);
 
   async function loadTasks() {
@@ -63,14 +68,28 @@ function Dashboard() {
       title,
       description,
       priority,
+      category,
       due_date: dueDate || null,
       repeat_type: repeatType,
       user_id: user.id,
     });
 
+    await createNotification({
+      userId: user.id,
+      title: "Task Created",
+      message: `"${title}" has been added successfully.`,
+      type: "success",
+    });
+
+    showBrowserNotification(
+      "Task Created",
+      `"${title}" has been added successfully.`
+    );
+
     setTitle("");
     setDescription("");
     setPriority("Medium");
+    setCategory("Personal");
     setDueDate("");
     setRepeatType("None");
 
@@ -85,11 +104,23 @@ function Dashboard() {
     if (!confirmed) return;
 
     await deleteTask(id);
+
+    showBrowserNotification(
+      "Task Deleted",
+      "A task has been deleted."
+    );
+
     loadTasks();
   }
 
   async function handleCompleteTask(task: Task) {
     await completeTask(task.id, !task.completed);
+
+    showBrowserNotification(
+      "Task Completed",
+      `"${task.title}" marked as completed.`
+    );
+
     loadTasks();
   }
 
@@ -102,15 +133,22 @@ function Dashboard() {
       title,
       description,
       priority,
+      category,
       due_date: dueDate || null,
       repeat_type: repeatType,
     });
+
+    showBrowserNotification(
+      "Task Updated",
+      `"${title}" updated successfully.`
+    );
 
     setEditingTask(null);
 
     setTitle("");
     setDescription("");
     setPriority("Medium");
+    setCategory("Personal");
     setDueDate("");
     setRepeatType("None");
 
@@ -122,6 +160,7 @@ function Dashboard() {
     setTitle("");
     setDescription("");
     setPriority("Medium");
+    setCategory("Personal");
     setDueDate("");
     setRepeatType("None");
   }
@@ -155,7 +194,11 @@ function Dashboard() {
       task.priority === filter ||
       (filter === "Completed" && task.completed);
 
-    return matchesSearch && matchesFilter;
+    const matchesCategory =
+      categoryFilter === "All Categories" ||
+      task.category === categoryFilter;
+
+    return matchesSearch && matchesFilter && matchesCategory;
   });
 
   return (
@@ -192,12 +235,14 @@ function Dashboard() {
         priority={priority}
         dueDate={dueDate}
         repeatType={repeatType}
+        category={category}
         editingTask={editingTask}
         onTitleChange={setTitle}
         onDescriptionChange={setDescription}
         onPriorityChange={setPriority}
         onDueDateChange={setDueDate}
         onRepeatTypeChange={setRepeatType}
+        onCategoryChange={setCategory}
         onSubmit={editingTask ? handleUpdateTask : handleAddTask}
         onCancel={handleCancelEdit}
       />
@@ -210,6 +255,7 @@ function Dashboard() {
           setTitle(task.title);
           setDescription(task.description);
           setPriority(task.priority);
+          setCategory(task.category ?? "Personal");
           setDueDate(task.due_date ?? "");
           setRepeatType(task.repeat_type ?? "None");
 
@@ -221,8 +267,10 @@ function Dashboard() {
         onDelete={handleDeleteTask}
         search={search}
         filter={filter}
+        categoryFilter={categoryFilter}
         onSearchChange={setSearch}
         onFilterChange={setFilter}
+        onCategoryFilterChange={setCategoryFilter}
       />
     </div>
   );

@@ -10,16 +10,36 @@ function Signup() {
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
       toast.error(error.message);
-    } else {
-      toast.success("Account created! Check your email.");
+      return;
     }
+
+    if (!data.user) {
+      toast.error("Signup failed.");
+      return;
+    }
+
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .insert({
+        id: data.user.id,
+        full_name: "",
+        avatar_url: "",
+      });
+
+    if (profileError) {
+      console.error(profileError);
+      toast.error(profileError.message);
+      return;
+    }
+
+    toast.success("Account created! Check your email.");
   }
 
   return (

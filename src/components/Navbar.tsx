@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import NotificationBell from "./NotificationBell";
 
 interface NavbarProps {
   onLogout: () => void;
@@ -25,6 +26,15 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
         </NavLink>
 
         <NavLink
+          to="/analytics"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+        >
+          Analytics
+        </NavLink>
+
+        <NavLink
           to="/profile"
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
@@ -35,6 +45,8 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
       </div>
 
       <div className="nav-right">
+
+        <NotificationBell />
 
         <button
           className="theme-btn"

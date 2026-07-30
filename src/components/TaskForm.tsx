@@ -6,12 +6,14 @@ interface TaskFormProps {
   priority: string;
   dueDate: string;
   repeatType: string;
+  category: string;
   editingTask: Task | null;
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onPriorityChange: (value: string) => void;
   onDueDateChange: (value: string) => void;
   onRepeatTypeChange: (value: string) => void;
+  onCategoryChange: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
 }
@@ -22,12 +24,14 @@ function TaskForm({
   priority,
   dueDate,
   repeatType,
+  category,
   editingTask,
   onTitleChange,
   onDescriptionChange,
   onPriorityChange,
   onDueDateChange,
   onRepeatTypeChange,
+  onCategoryChange,
   onSubmit,
   onCancel,
 }: TaskFormProps) {
@@ -74,6 +78,18 @@ function TaskForm({
             <option>Daily</option>
             <option>Weekly</option>
             <option>Monthly</option>
+          </select>
+
+          <select
+            value={category}
+            onChange={(e) => onCategoryChange(e.target.value)}
+          >
+            <option>Work</option>
+            <option>Study</option>
+            <option>Personal</option>
+            <option>Fitness</option>
+            <option>Shopping</option>
+            <option>Other</option>
           </select>
 
         <button type="submit">
