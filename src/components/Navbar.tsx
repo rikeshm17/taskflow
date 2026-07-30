@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import NotificationBell from "./NotificationBell";
@@ -9,18 +10,28 @@ interface NavbarProps {
 
 function Navbar({ onLogout, userEmail }: NavbarProps) {
   const { theme, toggleTheme } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <nav className="navbar">
       <div className="logo">⚡ TaskFlow</div>
 
-      <div className="nav-links">
+      <button
+        className="hamburger"
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle menu"
+      >
+        {menuOpen ? "✕" : "☰"}
+      </button>
+
+      <div className={`nav-links ${menuOpen ? "open" : ""}`}>
         <NavLink
           to="/"
           end
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
           }
+          onClick={() => setMenuOpen(false)}
         >
           Dashboard
         </NavLink>
@@ -30,6 +41,7 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
           }
+          onClick={() => setMenuOpen(false)}
         >
           Analytics
         </NavLink>
@@ -39,6 +51,7 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
           }
+          onClick={() => setMenuOpen(false)}
         >
           Profile
         </NavLink>
@@ -48,6 +61,7 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
           }
+          onClick={() => setMenuOpen(false)}
         >
           Kanban
         </NavLink>
@@ -57,6 +71,7 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
           }
+          onClick={() => setMenuOpen(false)}
         >
           Settings
         </NavLink>
@@ -66,6 +81,7 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
           }
+          onClick={() => setMenuOpen(false)}
         >
           Calendar
         </NavLink>
@@ -75,6 +91,7 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
           className={({ isActive }) =>
             isActive ? "nav-link active" : "nav-link"
           }
+          onClick={() => setMenuOpen(false)}
         >
           Export
         </NavLink>

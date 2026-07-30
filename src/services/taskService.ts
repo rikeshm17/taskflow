@@ -19,21 +19,21 @@ export async function addTask(task: {
   due_date: string | null;
   repeat_type: string;
   user_id: string;
-}) {
+}): Promise<{ data: any[] | null; error: any }> {
   return await supabase.from("tasks").insert(task);
 }
 
-export async function deleteTask(id: number) {
+export async function deleteTask(id: number): Promise<{ data: any[] | null; error: any }> {
   return await supabase.from("tasks").delete().eq("id", id);
 }
 
-export async function completeTask(id: number, completed: boolean) {
+export async function completeTask(id: number, completed: boolean): Promise<{ data: any[] | null; error: any }> {
   return await supabase
     .from("tasks")
     .update({ completed })
     .eq("id", id);
-    
 }
+
 export async function updateTask(
   id: number,
   task: {
@@ -44,7 +44,7 @@ export async function updateTask(
     due_date: string | null;
     repeat_type: string;
   }
-) {
+): Promise<{ data: any[] | null; error: any }> {
   return await supabase
     .from("tasks")
     .update(task)

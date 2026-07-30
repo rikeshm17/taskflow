@@ -23,8 +23,25 @@
     color:white;
     font-size:16px;
     cursor:pointer;
+    min-height:44px;
+    flex:1;
+    min-width:140px;
 }
 
 .export-buttons button:hover{
     opacity:.9;
+}
+
+.export-buttons button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+@media (max-width: 480px) {
+    .export-buttons{
+        flex-direction:column;
+    }
+    .export-buttons button{
+        width:100%;
+    }
 }

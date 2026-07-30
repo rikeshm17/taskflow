@@ -35,6 +35,8 @@ function Dashboard() {
   const [repeatType, setRepeatType] = useState("None");
   const [category, setCategory] = useState("Personal");
 
+  const scrollRef = { current: 0 };
+
   useEffect(() => {
     loadTasks();
     requestNotificationPermission();
@@ -48,8 +50,12 @@ function Dashboard() {
           schema: "public",
           table: "tasks",
         },
-        () => {
-          loadTasks();
+        async () => {
+          try {
+            await loadTasks();
+          } catch (err) {
+            console.error("Realtime load failed:", err);
+          }
         }
       )
       .subscribe();
@@ -60,21 +66,38 @@ function Dashboard() {
   }, []);
 
   async function loadTasks() {
+    scrollRef.current = window.scrollY;
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) return;
+    console.log("Current User:", user);
+
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     setUserEmail(user.email ?? "");
 
-    const { data } = await getTasks(user.id);
+    const { data, error } = await getTasks(user.id);
+
+    if (error) {
+      console.error("Failed to load tasks:", error);
+      setLoading(false);
+      return;
+    }
 
     if (data) {
       setTasks(data as Task[]);
     }
 
     setLoading(false);
+
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollRef.current);
+    });
   }
 
   async function handleAddTask(e: React.FormEvent) {
@@ -84,9 +107,11 @@ function Dashboard() {
       data: { user },
     } = await supabase.auth.getUser();
 
+    console.log("Current User:", user);
+
     if (!user) return;
 
-    await addTask({
+    const { data, error } = await addTask({
       title,
       description,
       priority,
@@ -96,6 +121,18 @@ function Dashboard() {
       repeat_type: repeatType,
       user_id: user.id,
     });
+
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
+
+    if (Array.isArray(data) && data.length > 0) {
+      setTasks(prev => [data[0], ...prev]);
+    } else {
+      await loadTasks();
+    }
 
     await createNotification({
       userId: user.id,
@@ -115,8 +152,6 @@ function Dashboard() {
     setCategory("Personal");
     setDueDate("");
     setRepeatType("None");
-
-    loadTasks();
   }
 
   async function handleDeleteTask(id: number) {
@@ -126,25 +161,41 @@ function Dashboard() {
 
     if (!confirmed) return;
 
-    await deleteTask(id);
+    const { error } = await deleteTask(id);
+
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
 
     showBrowserNotification(
       "Task Deleted",
       "A task has been deleted."
     );
 
-    loadTasks();
+    setTasks(prev => prev.filter(task => task.id !== id));
   }
 
   async function handleCompleteTask(task: Task) {
-    await completeTask(task.id, !task.completed);
+    const { error } = await completeTask(task.id, !task.completed);
+
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
 
     showBrowserNotification(
       "Task Completed",
       `"${task.title}" marked as completed.`
     );
 
-    loadTasks();
+    setTasks(prev =>
+      prev.map(t =>
+        t.id === task.id ? { ...t, completed: !t.completed } : t
+      )
+    );
   }
 
   async function handleUpdateTask(e: React.FormEvent) {
@@ -152,7 +203,7 @@ function Dashboard() {
 
     if (!editingTask) return;
 
-    await updateTask(editingTask.id, {
+    const { data, error } = await updateTask(editingTask.id, {
       title,
       description,
       priority,
@@ -160,6 +211,20 @@ function Dashboard() {
       due_date: dueDate || null,
       repeat_type: repeatType,
     });
+
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
+
+    if (data && data[0]) {
+      setTasks(prev =>
+        prev.map(t =>
+          t.id === editingTask.id ? { ...t, ...data[0] as Task } : t
+        )
+      );
+    }
 
     showBrowserNotification(
       "Task Updated",
@@ -175,10 +240,10 @@ function Dashboard() {
     setDueDate("");
     setRepeatType("None");
 
-    loadTasks();
+    await loadTasks();
   }
 
-  function handleCancelEdit() {
+  async function handleCancelEdit() {
     setEditingTask(null);
     setTitle("");
     setDescription("");
@@ -186,6 +251,8 @@ function Dashboard() {
     setCategory("Personal");
     setDueDate("");
     setRepeatType("None");
+
+    await loadTasks();
   }
 
   async function logout() {
