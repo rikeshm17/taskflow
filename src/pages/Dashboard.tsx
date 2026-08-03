@@ -19,6 +19,8 @@ import TaskChart from "../components/TaskChart";
 import type { Task } from "../types/task";
 import "../styles/dashboard.css";
 import ProductivityStats from "../components/ProductivityStats";
+import TodoTable from "../components/TodoTable";
+import "../styles/todotable.css";
 
 function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -259,6 +261,51 @@ function Dashboard() {
     await supabase.auth.signOut();
   }
 
+  async function handleAddTaskFromTable(task: {
+    title: string;
+    description: string;
+    priority: string;
+    category: string;
+    due_date: string | null;
+    repeat_type: string;
+  }) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data, error } = await addTask({
+      ...task,
+      status: "todo",
+      user_id: user.id,
+    });
+
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
+
+    if (Array.isArray(data) && data.length > 0) {
+      setTasks(prev => [data[0], ...prev]);
+    } else {
+      await loadTasks();
+    }
+
+    await createNotification({
+      userId: user.id,
+      title: "Task Created",
+      message: `"${task.title}" has been added successfully.`,
+      type: "success",
+    });
+
+    showBrowserNotification(
+      "Task Created",
+      `"${task.title}" has been added successfully.`
+    );
+  }
+
   const completed = tasks.filter((task) => task.completed).length;
   const pending = tasks.length - completed;
   const highPriority = tasks.filter(
@@ -364,6 +411,28 @@ function Dashboard() {
         onSearchChange={setSearch}
         onFilterChange={setFilter}
         onCategoryFilterChange={setCategoryFilter}
+        loading={loading}
+      />
+
+      <TodoTable
+        tasks={filteredTasks}
+        onComplete={handleCompleteTask}
+        onEdit={(task) => {
+          setEditingTask(task);
+          setTitle(task.title);
+          setDescription(task.description);
+          setPriority(task.priority);
+          setCategory(task.category ?? "Personal");
+          setDueDate(task.due_date ?? "");
+          setRepeatType(task.repeat_type ?? "None");
+
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }}
+        onDelete={handleDeleteTask}
+        onAdd={handleAddTaskFromTable}
         loading={loading}
       />
     </div>
