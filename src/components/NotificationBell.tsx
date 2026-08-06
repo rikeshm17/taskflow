@@ -14,17 +14,18 @@ function NotificationBell() {
   useEffect(() => {
     loadNotifications();
 
-    let channel: any;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
 
-    async function subscribe() {
+    async function setupRealtime() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
       if (!user) return;
 
-      channel = supabase
-        .channel("notifications")
+      channel = supabase.channel(`notifications-${user.id}`);
+
+      channel
         .on(
           "postgres_changes",
           {
@@ -40,7 +41,7 @@ function NotificationBell() {
         .subscribe();
     }
 
-    subscribe();
+    setupRealtime();
 
     return () => {
       if (channel) {

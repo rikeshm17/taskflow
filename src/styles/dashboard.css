@@ -42,7 +42,7 @@
 
 .nav-link {
     text-decoration: none;
-    color: #6E7575;
+    color: var(--secondary);
     font-weight: 500;
     font-size: 15px;
     transition: 0.2s;
@@ -107,15 +107,20 @@
 }
 
 .card {
-    background: var(--card);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
     padding: 30px;
     border-radius: 18px;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
     transition: .3s;
 }
 
 .card:hover {
     transform: translateY(-6px);
+    box-shadow: var(--glass-shadow-hover);
+    border-color: rgba(255,255,255,0.25);
 }
 
 .card h2 {
@@ -131,10 +136,13 @@
 .task-form{
     max-width:900px;
     margin:40px auto;
-    background:var(--card);
+    background:var(--glass-bg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border);
     padding:30px;
     border-radius:18px;
-    box-shadow:var(--shadow);
+    box-shadow:var(--glass-shadow);
 }
 
 .task-form h2{
@@ -213,7 +221,7 @@
 }
 
 .task-header span{
-    background:#FC563C;
+    background:var(--accent);
     color:white;
     padding:6px 14px;
     border-radius:30px;
@@ -221,11 +229,14 @@
 }
 
 .empty-state{
-    background:var(--card);
+    background:var(--glass-bg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border);
     padding:50px;
     text-align:center;
     border-radius:18px;
-    box-shadow:var(--shadow);
+    box-shadow:var(--glass-shadow);
 }
 
 .empty-state h2{
@@ -237,11 +248,14 @@
 }
 
 .task-card{
-    background:var(--card);
+    background:var(--glass-bg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border);
     border-radius:16px;
     padding:20px;
     margin-bottom:18px;
-    box-shadow:var(--shadow);
+    box-shadow:var(--glass-shadow);
 
     display:flex;
     justify-content:space-between;
@@ -253,6 +267,7 @@
 .task-card:hover{
     transform:translateY(-6px);
     box-shadow:0 15px 35px rgba(0,0,0,.12);
+    border-color:rgba(255,255,255,0.25);
 }
 
 .task-card.completed{
@@ -354,10 +369,13 @@
 .progress-section{
     max-width:900px;
     margin:30px auto;
-    background:var(--card);
+    background:var(--glass-bg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border);
     padding:30px;
     border-radius:18px;
-    box-shadow:var(--shadow);
+    box-shadow:var(--glass-shadow);
 }
 
 .progress-header{
@@ -516,12 +534,20 @@
 }
 
 .productivity-card{
-    background:var(--card);
+    background:var(--glass-bg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border);
     border-radius:18px;
     padding:25px;
     text-align:center;
     transition:.3s;
-    box-shadow:var(--shadow);
+    box-shadow:var(--glass-shadow);
+}
+
+.productivity-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(255,255,255,0.25);
 }
 
 .productivity-card:hover{
@@ -539,11 +565,14 @@
 }
 
 .chart-card{
-    background:var(--card);
+    background:var(--glass-bg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border);
     border-radius:18px;
     padding:25px;
     margin-top:30px;
-    box-shadow:var(--shadow);
+    box-shadow:var(--glass-shadow);
 }
 
 .chart-card h2{
@@ -590,7 +619,7 @@
 
 .overdue {
     margin-top: 8px;
-    color: #e53935;
+    color: #FC563C;
     font-weight: 700;
 }
 
@@ -632,10 +661,12 @@
     width: 320px;
     max-height: 400px;
     overflow-y: auto;
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
     border-radius: 16px;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
     padding: 16px;
     z-index: 100;
 }
@@ -650,7 +681,10 @@
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 8px;
-    background: var(--background);
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
 }
 
 .notification-item.unread {
@@ -703,10 +737,13 @@
 }
 
 .kanban-column {
-    background: var(--background);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
     border-radius: 18px;
     padding: 20px;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
 }
 
 .kanban-header {
@@ -738,7 +775,10 @@
 }
 
 .kanban-card {
-    background: var(--card);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
     border-radius: 14px;
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -804,10 +844,13 @@
 }
 
 .kanban-column {
-    background: var(--background);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
     border-radius: 18px;
     padding: 20px;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
 }
 
 .kanban-header {
@@ -839,7 +882,10 @@
 }
 
 .kanban-card {
-    background: var(--card);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
     border-radius: 14px;
     padding: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -1144,11 +1190,14 @@
 }
 
 .settings-section {
-    background: var(--card);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
     border-radius: 18px;
     padding: 28px;
     margin-bottom: 24px;
-    box-shadow: var(--shadow);
+    box-shadow: var(--glass-shadow);
 }
 
 .settings-section h2 {

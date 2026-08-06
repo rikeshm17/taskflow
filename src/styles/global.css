@@ -41,6 +41,99 @@ input:focus{
     box-shadow:0 0 0 3px rgba(252,86,60,.15);
 }
 
+/* =========================
+    Glassmorphism Utilities
+========================= */
+
+.glass{
+    background:var(--glass-bg);
+    backdrop-filter:blur(var(--glass-blur));
+    -webkit-backdrop-filter:blur(var(--glass-blur));
+    border:1px solid var(--glass-border);
+    box-shadow:var(--glass-shadow);
+}
+
+.glass-dark{
+    background:var(--glass-bg-dark);
+    backdrop-filter:blur(var(--glass-blur));
+    -webkit-backdrop-filter:blur(var(--glass-blur));
+    border:1px solid var(--glass-border-dark);
+    box-shadow:var(--glass-shadow);
+}
+
+.glass-card{
+    background:var(--glass-bg);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border:1px solid var(--glass-border);
+    border-radius:var(--radius);
+    box-shadow:var(--glass-shadow);
+    transition:all var(--transition);
+}
+
+.glass-card:hover{
+    box-shadow:var(--glass-shadow-hover);
+    transform:translateY(-2px);
+}
+
+.glass-nav{
+    background:rgba(23,42,57,0.7);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.glass-nav-dark{
+    background:rgba(13,27,42,0.8);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,0.04);
+}
+
+.glass-input{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--glass-border);
+    border-radius:12px;
+    transition:all var(--transition);
+}
+
+.glass-input:focus{
+    background:rgba(255,255,255,0.1);
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(252,86,60,0.12);
+}
+
+.glass-btn{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--glass-border);
+    border-radius:12px;
+    color:var(--text);
+    transition:all var(--transition);
+}
+
+.glass-btn:hover{
+    background:rgba(255,255,255,0.15);
+    border-color:var(--accent);
+    transform:translateY(-2px);
+    box-shadow:0 8px 25px rgba(0,0,0,0.1);
+}
+
+.glass-btn-primary{
+    background:linear-gradient(135deg,var(--crimson) 0%,var(--rose) 100%);
+    border:none;
+    color:white;
+    box-shadow:0 4px 15px rgba(115,18,17,0.3);
+}
+
+.glass-btn-primary:hover{
+    box-shadow:0 8px 25px rgba(115,18,17,0.5);
+    transform:translateY(-2px);
+}
+
 div,
 section,
 nav,
@@ -50,15 +143,17 @@ textarea,
 select,
 .task-card,
 .card,
-.productivity-card{
-
+.productivity-card,
+.glass-card,
+.glass-nav,
+.glass-input,
+.glass-btn{
     transition:
         background .3s ease,
         color .3s ease,
         border-color .3s ease,
         box-shadow .3s ease,
         transform .25s ease;
-
 }
 #root {
   min-height: 100vh;

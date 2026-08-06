@@ -52,17 +52,20 @@
 }
 
 .todo-table-container {
-  background: var(--card);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  transition: transform .3s ease, box-shadow .3s ease;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+    transition: transform .3s ease, box-shadow .3s ease;
 }
 
 .todo-table-container:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+    box-shadow: var(--glass-shadow-hover);
+    border-color: rgba(255,255,255,0.25);
 }
 
 .todo-table {
@@ -206,7 +209,7 @@
 
 .overdue-label {
   display: inline-block;
-  background: #e53935;
+  background: #FC563C;
   color: white;
   padding: 2px 8px;
   border-radius: 6px;

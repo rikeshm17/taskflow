@@ -16,6 +16,15 @@
     --shadow:0 10px 25px rgba(0,0,0,.08);
     --transition:.25s ease;
 
+    /* Glassmorphism */
+    --glass-bg:rgba(255,255,255,0.55);
+    --glass-bg-dark:rgba(30,40,50,0.6);
+    --glass-border:rgba(255,255,255,0.18);
+    --glass-border-dark:rgba(255,255,255,0.08);
+    --glass-blur:20px;
+    --glass-shadow:0 8px 32px rgba(0,0,0,0.08);
+    --glass-shadow-hover:0 12px 40px rgba(0,0,0,0.15);
+
 }
 
 /* Dark Theme */
@@ -33,5 +42,12 @@ body[data-theme="dark"]{
     --border:#324858;
 
     --shadow:0 10px 25px rgba(0,0,0,.35);
+
+    --glass-bg:rgba(255,255,255,0.06);
+    --glass-bg-dark:rgba(255,255,255,0.08);
+    --glass-border:rgba(255,255,255,0.08);
+    --glass-border-dark:rgba(255,255,255,0.04);
+    --glass-shadow:0 8px 32px rgba(0,0,0,0.2);
+    --glass-shadow-hover:0 12px 40px rgba(0,0,0,0.3);
 
 }

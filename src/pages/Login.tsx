@@ -23,10 +23,44 @@ function Login() {
     }
   }
 
+  async function handleGoogleLogin() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+
+    if (error) toast.error(error.message);
+  }
+
+  async function handleGithubLogin() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+
+    if (error) toast.error(error.message);
+  }
+
+  async function handleDiscordLogin() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+
+    if (error) toast.error(error.message);
+  }
+
   return (
     <div className="auth-page">
       <div className="auth-card">
         <h1 className="auth-title">Welcome Back 👋</h1>
+
         <p className="auth-subtitle">
           Login to continue to <strong>TaskFlow</strong>
         </p>
@@ -52,6 +86,34 @@ function Login() {
             Login
           </button>
         </form>
+
+        <div className="oauth-divider">
+          <span>OR</span>
+        </div>
+
+        <button
+          type="button"
+          className="google-btn"
+          onClick={handleGoogleLogin}
+        >
+          🔵 Continue with Google
+        </button>
+
+        <button
+          type="button"
+          className="github-btn"
+          onClick={handleGithubLogin}
+        >
+          ⚫ Continue with GitHub
+        </button>
+
+        <button
+          type="button"
+          className="discord-btn"
+          onClick={handleDiscordLogin}
+        >
+          🟣 Continue with Discord
+        </button>
 
         <p className="auth-footer">
           Don't have an account? <Link to="/signup">Sign up</Link>
