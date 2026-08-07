@@ -94,7 +94,7 @@ function Login() {
           className="discord-btn"
           onClick={() => handleOAuthLogin("discord")}
         >
-          🟣 Continue with Discord
+          🟣 Continue with  Discord 
         </button>
 
         <p className="auth-footer">
