@@ -23,37 +23,19 @@ function Login() {
     }
   }
 
-  async function handleGoogleLogin() {
+  async function handleOAuthLogin(
+    provider: "google" | "github" | "discord"
+  ) {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider,
       options: {
         redirectTo: window.location.origin,
       },
     });
 
-    if (error) toast.error(error.message);
-  }
-
-  async function handleGithubLogin() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
-
-    if (error) toast.error(error.message);
-  }
-
-  async function handleDiscordLogin() {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "discord",
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
-
-    if (error) toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+    }
   }
 
   return (
@@ -94,7 +76,7 @@ function Login() {
         <button
           type="button"
           className="google-btn"
-          onClick={handleGoogleLogin}
+          onClick={() => handleOAuthLogin("google")}
         >
           🔵 Continue with Google
         </button>
@@ -102,7 +84,7 @@ function Login() {
         <button
           type="button"
           className="github-btn"
-          onClick={handleGithubLogin}
+          onClick={() => handleOAuthLogin("github")}
         >
           ⚫ Continue with GitHub
         </button>
@@ -110,7 +92,7 @@ function Login() {
         <button
           type="button"
           className="discord-btn"
-          onClick={handleDiscordLogin}
+          onClick={() => handleOAuthLogin("discord")}
         >
           🟣 Continue with Discord
         </button>
