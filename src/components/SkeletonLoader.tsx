@@ -14,7 +14,7 @@ function SkeletonLoader({
       case "card":
         return "100%";
       case "text":
-        return `${60 + Math.random() * 40}%`;
+        return "80%";
       case "avatar":
         return "48px";
       case "button":

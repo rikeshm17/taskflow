@@ -18,9 +18,6 @@ import AccessDenied from "./pages/AccessDenied";
 function App() {
   const { session } = useAuth();
   const { role, loading } = useRole();
-  console.log("Session:", session);
-console.log("Role:", role);
-console.log("Loading:", loading);
 
   if (loading) {
     return <h2 style={{ padding: "40px" }}>Loading...</h2>;

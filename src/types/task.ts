@@ -8,4 +8,6 @@ export type Task = {
   repeat_type: string;
   category: string;
   status: string;
+  user_id: string;
+  created_at: string;
 };

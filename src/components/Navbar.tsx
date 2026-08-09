@@ -11,6 +11,7 @@ interface NavbarProps {
 function Navbar({ onLogout, userEmail }: NavbarProps) {
   const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   return (
     <nav className="navbar">
@@ -20,11 +21,13 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
         className="hamburger"
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label="Toggle menu"
+        aria-expanded={menuOpen}
+        aria-controls="nav-links"
       >
         {menuOpen ? "✕" : "☰"}
       </button>
 
-      <div className={`nav-links ${menuOpen ? "open" : ""}`}>
+      <div id="nav-links" className={`nav-links ${menuOpen ? "open" : ""}`} role="navigation" aria-label="Main navigation">
         <NavLink
           to="/"
           end
@@ -108,12 +111,51 @@ function Navbar({ onLogout, userEmail }: NavbarProps) {
           {theme === "light" ? "🌙" : "☀️"}
         </button>
 
-        <div className="nav-avatar">
-          {userEmail.charAt(0).toUpperCase()}
+        <div className="nav-avatar-wrapper">
+          <div
+            className="nav-avatar"
+            aria-hidden="true"
+            onClick={() => setProfileOpen(!profileOpen)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setProfileOpen(!profileOpen); }}
+          >
+            {userEmail.charAt(0).toUpperCase()}
+          </div>
+
+          {profileOpen && (
+            <div className="nav-avatar-dropdown">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  isActive ? "nav-dropdown-link active" : "nav-dropdown-link"
+                }
+                onClick={() => setProfileOpen(false)}
+              >
+                Dashboard
+              </NavLink>
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  isActive ? "nav-dropdown-link active" : "nav-dropdown-link"
+                }
+                onClick={() => setProfileOpen(false)}
+              >
+                Profile
+              </NavLink>
+              <button
+                className="nav-dropdown-logout"
+                onClick={() => { setProfileOpen(false); onLogout(); }}
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
 
         <button
-          className="logout-btn"
+          className="logout-btn logout-btn-desktop"
           onClick={onLogout}
         >
           Logout

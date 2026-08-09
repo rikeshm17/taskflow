@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../services/supabase";
 import {
   addTask,
@@ -20,7 +20,12 @@ import type { Task } from "../types/task";
 import "../styles/dashboard.css";
 import ProductivityStats from "../components/ProductivityStats";
 import TodoTable from "../components/TodoTable";
+import Footer from "../components/Footer";
+import TagsManager from "../components/TagsManager";
+import FocusTimer from "../components/FocusTimer";
 import "../styles/todotable.css";
+import "../styles/tags.css";
+import "../styles/focustimer.css";
 
 function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -36,8 +41,42 @@ function Dashboard() {
   const [dueDate, setDueDate] = useState("");
   const [repeatType, setRepeatType] = useState("None");
   const [category, setCategory] = useState("Personal");
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   const scrollRef = { current: 0 };
+
+  const loadTasks = useCallback(async () => {
+    scrollRef.current = window.scrollY;
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    setUserEmail(user.email ?? "");
+
+    const { data, error } = await getTasks(user.id);
+
+    if (error) {
+      setLoading(false);
+      return;
+    }
+
+    if (data) {
+      setTasks(data as Task[]);
+    }
+
+    setLoading(false);
+
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollRef.current);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     loadTasks();
@@ -55,8 +94,8 @@ function Dashboard() {
         async () => {
           try {
             await loadTasks();
-          } catch (err) {
-            console.error("Realtime load failed:", err);
+          } catch {
+            // Silently handle realtime load errors
           }
         }
       )
@@ -65,42 +104,7 @@ function Dashboard() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
-
-  async function loadTasks() {
-    scrollRef.current = window.scrollY;
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    console.log("Current User:", user);
-
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
-    setUserEmail(user.email ?? "");
-
-    const { data, error } = await getTasks(user.id);
-
-    if (error) {
-      console.error("Failed to load tasks:", error);
-      setLoading(false);
-      return;
-    }
-
-    if (data) {
-      setTasks(data as Task[]);
-    }
-
-    setLoading(false);
-
-    requestAnimationFrame(() => {
-      window.scrollTo(0, scrollRef.current);
-    });
-  }
+  }, [loadTasks]);
 
   async function handleAddTask(e: React.FormEvent) {
     e.preventDefault();
@@ -108,8 +112,6 @@ function Dashboard() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
-    console.log("Current User:", user);
 
     if (!user) return;
 
@@ -125,7 +127,6 @@ function Dashboard() {
     });
 
     if (error) {
-      console.error(error);
       alert(error.message);
       return;
     }
@@ -166,7 +167,6 @@ function Dashboard() {
     const { error } = await deleteTask(id);
 
     if (error) {
-      console.error(error);
       alert(error.message);
       return;
     }
@@ -183,7 +183,6 @@ function Dashboard() {
     const { error } = await completeTask(task.id, !task.completed);
 
     if (error) {
-      console.error(error);
       alert(error.message);
       return;
     }
@@ -215,7 +214,6 @@ function Dashboard() {
     });
 
     if (error) {
-      console.error(error);
       alert(error.message);
       return;
     }
@@ -282,7 +280,6 @@ function Dashboard() {
     });
 
     if (error) {
-      console.error(error);
       alert(error.message);
       return;
     }
@@ -309,7 +306,7 @@ function Dashboard() {
   const completed = tasks.filter((task) => task.completed).length;
   const pending = tasks.length - completed;
   const highPriority = tasks.filter(
-    (task) => task.priority === "High"
+    (task) => task.priority === "High" || task.priority === "Urgent"
   ).length;
   const overdue = tasks.filter(
     (task) =>
@@ -341,9 +338,9 @@ function Dashboard() {
   return (
     <div className="dashboard">
       <Navbar
-  onLogout={logout}
-  userEmail={userEmail}
-/>
+        onLogout={logout}
+        userEmail={userEmail}
+      />
 
       <Hero userEmail={userEmail} />
 
@@ -362,6 +359,8 @@ function Dashboard() {
         completionRate={completionRate}
         loading={loading}
       />
+
+      <FocusTimer tasks={tasks} />
 
       <TaskChart
         completed={completed}
@@ -387,6 +386,15 @@ function Dashboard() {
         onCancel={handleCancelEdit}
       />
 
+      {selectedTaskId && (
+      <TagsManager
+        taskId={selectedTaskId}
+        onTagsChange={(_tags) => {
+          // tags are managed internally by TagsManager
+        }}
+      />
+      )}
+
       <TaskList
         filteredTasks={filteredTasks}
         onComplete={handleCompleteTask}
@@ -398,6 +406,7 @@ function Dashboard() {
           setCategory(task.category ?? "Personal");
           setDueDate(task.due_date ?? "");
           setRepeatType(task.repeat_type ?? "None");
+          setSelectedTaskId(task.id);
 
           window.scrollTo({
             top: 0,
@@ -425,6 +434,7 @@ function Dashboard() {
           setCategory(task.category ?? "Personal");
           setDueDate(task.due_date ?? "");
           setRepeatType(task.repeat_type ?? "None");
+          setSelectedTaskId(task.id);
 
           window.scrollTo({
             top: 0,
@@ -435,6 +445,8 @@ function Dashboard() {
         onAdd={handleAddTaskFromTable}
         loading={loading}
       />
+
+      <Footer />
     </div>
   );
 }

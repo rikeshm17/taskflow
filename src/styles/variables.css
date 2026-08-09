@@ -16,6 +16,10 @@
     --shadow:0 10px 25px rgba(0,0,0,.08);
     --transition:.25s ease;
 
+    /* Extended Colors */
+    --crimson:#731211;
+    --rose:#997A80;
+
     /* Glassmorphism */
     --glass-bg:rgba(255,255,255,0.55);
     --glass-bg-dark:rgba(30,40,50,0.6);
@@ -50,4 +54,6 @@ body[data-theme="dark"]{
     --glass-shadow:0 8px 32px rgba(0,0,0,0.2);
     --glass-shadow-hover:0 12px 40px rgba(0,0,0,0.3);
 
+    --crimson:#E94560;
+    --rose:#FF6B6B;
 }

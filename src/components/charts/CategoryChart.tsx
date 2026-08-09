@@ -35,6 +35,19 @@ function CategoryChart({ tasks }: Props) {
     value: tasks.filter((t) => t.category === category).length,
   }));
 
+  const hasData = data.some((item) => item.value > 0);
+
+  if (!hasData) {
+    return (
+      <div className="chart-card">
+        <h2>Tasks by Category</h2>
+        <div className="chart-empty">
+          <p>No category data available yet.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="chart-card">
       <h2>Tasks by Category</h2>

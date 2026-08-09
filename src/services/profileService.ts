@@ -1,13 +1,13 @@
 import { supabase } from "./supabase";
 
-export async function getCurrentUserRole() {
+export async function getCurrentUserRole(): Promise<string> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  console.log("Logged in user:", user);
-
-  if (!user) return null;
+  if (!user) {
+    throw new Error("No authenticated user");
+  }
 
   const { data, error } = await supabase
     .from("profiles")
@@ -15,12 +15,9 @@ export async function getCurrentUserRole() {
     .eq("id", user.id)
     .single();
 
-  console.log("Profile data:", data);
-  console.log("Profile error:", error);
-
-  if (error) {
-    return null;
+  if (error || !data) {
+    throw new Error(error?.message || "Failed to fetch user role");
   }
 
-  return data.role;
+  return data.role as string;
 }

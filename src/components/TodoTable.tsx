@@ -232,7 +232,9 @@ function TodoTable({
                     </td>
                     <td>
                       <span className={`priority-badge ${task.priority.toLowerCase()}`}>
-                        {task.priority === "High"
+                        {task.priority === "Urgent"
+                          ? "🚨 Urgent"
+                          : task.priority === "High"
                           ? "🔴 High"
                           : task.priority === "Medium"
                           ? "🟡 Medium"

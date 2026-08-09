@@ -4,6 +4,7 @@ import { supabase } from "../services/supabase";
 import { useTheme } from "../context/ThemeContext";
 import Navbar from "../components/Navbar";
 import AvatarUploader from "../components/AvatarUploader";
+import Footer from "../components/Footer";
 import "../styles/dashboard.css";
 
 const ACCENT_COLORS = [
@@ -33,10 +34,23 @@ function Settings() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     loadSettings();
+    loadUserEmail();
   }, []);
+
+  async function loadUserEmail() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) setUserEmail(user.email ?? "");
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+  }
 
   async function loadSettings() {
     const {
@@ -133,13 +147,18 @@ function Settings() {
 
     if (!user) return;
 
-    await supabase.from("tasks").delete().eq("user_id", user.id);
-    await supabase.from("notifications").delete().eq("user_id", user.id);
-    await supabase.from("profiles").delete().eq("id", user.id);
+    const { error: tasksError } = await supabase.from("tasks").delete().eq("user_id", user.id);
+    const { error: notificationsError } = await supabase.from("notifications").delete().eq("user_id", user.id);
+    const { error: profileError } = await supabase.from("profiles").delete().eq("id", user.id);
 
-    // await supabase.auth.admin.deleteUser(user.id);
+    if (tasksError || notificationsError || profileError) {
+      toast.error("Failed to delete some data. Please try again.");
+      return;
+    }
 
+    await supabase.auth.signOut();
     toast.success("Account deleted.");
+    window.location.href = "/login";
   }
 
   function applyAccentColor(color: string) {
@@ -153,7 +172,7 @@ function Settings() {
 
   return (
     <div className="dashboard">
-      <Navbar onLogout={async () => await supabase.auth.signOut()} userEmail="" />
+      <Navbar onLogout={logout} userEmail={userEmail} />
 
       <section className="hero">
         <h1>⚙️ Settings</h1>
@@ -338,6 +357,8 @@ function Settings() {
           {loading ? "Saving..." : "Save Changes"}
         </button>
       </section>
+
+      <Footer />
     </div>
   );
 }

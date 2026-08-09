@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { supabase } from "../services/supabase";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import "../styles/profile.css";
 
 type Profile = {
@@ -16,11 +18,24 @@ function Profile() {
   const [editing, setEditing] = useState(false);
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     loadProfile();
+    loadUserEmail();
   }, []);
+
+  async function loadUserEmail() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) setUserEmail(user.email ?? "");
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+  }
 
   async function loadProfile() {
     const {
@@ -76,7 +91,10 @@ function Profile() {
 
   return (
     <div className="profile-page">
-      <div className="profile-card">
+      <Navbar onLogout={logout} userEmail={userEmail} />
+
+      <div className="profile-content">
+        <div className="profile-card">
 
         <div className="avatar">
           {email.charAt(0).toUpperCase()}
@@ -136,6 +154,9 @@ function Profile() {
         )}
 
       </div>
+
+      <Footer />
+    </div>
     </div>
   );
 }

@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then(({ data }) => {
         setSession(data.session);
       })
-      .catch(() => {
+      .catch((_error) => {
         setSession(null);
       });
 
@@ -47,6 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react/only-export-components
 export function useAuth() {
   return useContext(AuthContext);
 }

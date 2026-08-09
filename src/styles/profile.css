@@ -1,9 +1,15 @@
 .profile-page{
     min-height:100vh;
     display:flex;
+    flex-direction:column;
+    background:var(--background);
+}
+
+.profile-content{
+    flex:1;
+    display:flex;
     justify-content:center;
     align-items:center;
-    background:var(--background);
     padding:20px;
 }
 

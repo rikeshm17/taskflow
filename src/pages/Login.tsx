@@ -1,20 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { supabase } from "../services/supabase";
+import { useAuth } from "../context/AuthContext";
 import "../styles/auth.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { session } = useAuth();
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  if (session) {
+    return null;
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+
+    setIsSubmitting(true);
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    if (mountedRef.current) {
+      setIsSubmitting(false);
+    }
 
     if (error) {
       toast.error(error.message);
@@ -54,6 +74,8 @@ function Login() {
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
           />
 
           <input
@@ -62,10 +84,12 @@ function Login() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="current-password"
           />
 
-          <button className="auth-btn" type="submit">
-            Login
+          <button className="auth-btn" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
 
@@ -77,24 +101,27 @@ function Login() {
           type="button"
           className="google-btn"
           onClick={() => handleOAuthLogin("google")}
+          disabled={isSubmitting}
         >
-          🔵 Continue with Google
+          Continue with Google
         </button>
 
         <button
           type="button"
           className="github-btn"
           onClick={() => handleOAuthLogin("github")}
+          disabled={isSubmitting}
         >
-          ⚫ Continue with GitHub
+          Continue with GitHub
         </button>
 
         <button
           type="button"
           className="discord-btn"
           onClick={() => handleOAuthLogin("discord")}
+          disabled={isSubmitting}
         >
-          🟣 Continue with  Discord 
+          Continue with Discord
         </button>
 
         <p className="auth-footer">

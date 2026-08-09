@@ -40,12 +40,16 @@ export function RoleProvider({
 
       setLoading(true);
 
-      const userRole = await getCurrentUserRole();
+      try {
+        const userRole = await getCurrentUserRole();
 
-      if (userRole === "admin") {
-        setRole("admin");
-      } else {
-        setRole("user");
+        if (userRole === "admin") {
+          setRole("admin");
+        } else {
+          setRole("user");
+        }
+      } catch {
+        setRole(null);
       }
 
       setLoading(false);
@@ -61,6 +65,7 @@ export function RoleProvider({
   );
 }
 
+// eslint-disable-next-line react/only-export-components
 export function useRole() {
   return useContext(RoleContext);
 }

@@ -1,6 +1,5 @@
 export async function requestNotificationPermission() {
   if (!("Notification" in window)) {
-    console.log("Browser doesn't support notifications.");
     return false;
   }
 
@@ -19,8 +18,14 @@ export function showBrowserNotification(
 ) {
   if (Notification.permission !== "granted") return;
 
-  new Notification(title, {
-    body,
-    icon: "/logo192.png",
-  });
+  try {
+    new Notification(title, {
+      body,
+      icon: "/favicon.ico",
+    });
+  } catch {
+    new Notification(title, {
+      body,
+    });
+  }
 }

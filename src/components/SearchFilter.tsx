@@ -29,6 +29,7 @@ function SearchFilter({
         onChange={(e) => onFilterChange(e.target.value)}
       >
         <option>All</option>
+        <option>Urgent</option>
         <option>High</option>
         <option>Medium</option>
         <option>Low</option>

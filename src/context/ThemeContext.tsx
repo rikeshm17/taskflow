@@ -36,7 +36,7 @@ export function ThemeProvider({
       document.body.setAttribute("data-theme", theme);
       localStorage.setItem("theme", theme);
     } catch {
-      document.body.setAttribute("data-theme", theme);
+      // Silently handle theme application errors
     }
   }, [theme]);
 
@@ -51,6 +51,7 @@ export function ThemeProvider({
   );
 }
 
+// eslint-disable-next-line react/only-export-components
 export function useTheme() {
   return useContext(ThemeContext);
 }

@@ -72,6 +72,7 @@ function AvatarUploader({
           "https://placehold.co/150x150?text=User"
         }
         className="avatar-preview"
+        alt="Profile picture"
       />
 
       <button

@@ -6,17 +6,31 @@ import {
   exportToExcel,
   exportToCSV,
 } from "../services/exportService";
-
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import type { Task } from "../types/task";
 import "../styles/export.css";
 
 function ExportPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     loadTasks();
+    loadUserEmail();
   }, []);
+
+  async function loadUserEmail() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) setUserEmail(user.email ?? "");
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+  }
 
   async function loadTasks() {
     const {
@@ -35,39 +49,45 @@ function ExportPage() {
   }
 
   return (
-    <div className="export-page">
+    <div className="dashboard">
+      <Navbar onLogout={logout} userEmail={userEmail} />
 
-      <h1>📄 Export Tasks</h1>
+      <div className="export-page">
 
-      <p>
-        Download your TaskFlow data in different formats.
-      </p>
+        <h1>Export Tasks</h1>
 
-      <div className="export-buttons">
+        <p>
+          Download your TaskFlow data in different formats.
+        </p>
 
-        <button 
-          onClick={() => exportToPDF(tasks)}
-          disabled={loading}
-        >
-          Export PDF
-        </button>
+        <div className="export-buttons">
 
-        <button 
-          onClick={() => exportToExcel(tasks)}
-          disabled={loading}
-        >
-          Export Excel
-        </button>
+          <button
+            onClick={() => exportToPDF(tasks)}
+            disabled={loading}
+          >
+            Export PDF
+          </button>
 
-        <button 
-          onClick={() => exportToCSV(tasks)}
-          disabled={loading}
-        >
-          Export CSV
-        </button>
+          <button
+            onClick={() => exportToExcel(tasks)}
+            disabled={loading}
+          >
+            Export Excel
+          </button>
+
+          <button
+            onClick={() => exportToCSV(tasks)}
+            disabled={loading}
+          >
+            Export CSV
+          </button>
+
+        </div>
 
       </div>
 
+      <Footer />
     </div>
   );
 }

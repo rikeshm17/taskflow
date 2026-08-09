@@ -14,7 +14,7 @@ function ProductivityStats({
   return (
     <section className="productivity">
       <div className="productivity-card">
-        <h3>🔥 High Priority</h3>
+        <h3>High + Urgent</h3>
         {loading ? (
           <div className="skeleton skeleton-number" />
         ) : (

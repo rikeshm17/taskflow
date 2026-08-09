@@ -1,15 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { supabase } from "../services/supabase";
+import { useAuth } from "../context/AuthContext";
 import "../styles/auth.css";
 
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { session } = useAuth();
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  if (session) {
+    return null;
+  }
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
+
+    setIsSubmitting(true);
 
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -17,11 +33,17 @@ function Signup() {
     });
 
     if (error) {
+      if (mountedRef.current) {
+        setIsSubmitting(false);
+      }
       toast.error(error.message);
       return;
     }
 
     if (!data.user) {
+      if (mountedRef.current) {
+        setIsSubmitting(false);
+      }
       toast.error("Signup failed.");
       return;
     }
@@ -34,9 +56,12 @@ function Signup() {
         avatar_url: "",
       });
 
+    if (mountedRef.current) {
+      setIsSubmitting(false);
+    }
+
     if (profileError) {
-      console.error(profileError);
-      toast.error(profileError.message);
+      toast.error("Failed to create profile. Please contact support or try again.");
       return;
     }
 
@@ -59,6 +84,8 @@ function Signup() {
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
           />
 
           <input
@@ -67,10 +94,13 @@ function Signup() {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+            autoComplete="new-password"
           />
 
-          <button className="auth-btn" type="submit">
-            Create Account
+          <button className="auth-btn" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
