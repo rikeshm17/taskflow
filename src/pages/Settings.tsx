@@ -20,6 +20,14 @@ const PRIORITIES = ["Low", "Medium", "High"];
 const CATEGORIES = ["Work", "Study", "Personal", "Fitness", "Shopping", "Other"];
 const WEEK_STARTS = ["Sunday", "Monday", "Saturday"];
 
+const SHORTCUTS = [
+  { key: "Ctrl/Cmd + N", description: "Create new task" },
+  { key: "Ctrl/Cmd + F", description: "Search tasks" },
+  { key: "Ctrl/Cmd + D", description: "Toggle dark mode" },
+  { key: "Escape", description: "Cancel edit form" },
+  { key: "Enter (in form)", description: "Save task" },
+];
+
 function Settings() {
   const { theme, toggleTheme } = useTheme();
   const [accent, setAccent] = useState("#FC563C");
@@ -70,11 +78,16 @@ function Settings() {
       setAvatarUrl(data.avatar_url || "");
       if (data.settings) {
         const s = data.settings as Record<string, string>;
-        if (s.accent) setAccent(s.accent);
+        if (s.accent) {
+          setAccent(s.accent);
+          applyAccentColor(s.accent);
+        }
         if (s.default_priority) setDefaultPriority(s.default_priority);
         if (s.default_category) setDefaultCategory(s.default_category);
         if (s.week_starts) setWeekStarts(s.week_starts);
         if (s.reminder_time) setReminderTime(s.reminder_time);
+        if (s.browser_notifications !== undefined) setBrowserNotifications(s.browser_notifications === "true");
+        if (s.email_notifications !== undefined) setEmailNotifications(s.email_notifications === "true");
       }
     }
   }
@@ -94,6 +107,8 @@ function Settings() {
       default_category: defaultCategory,
       week_starts: weekStarts,
       reminder_time: reminderTime,
+      browser_notifications: String(browserNotifications),
+      email_notifications: String(emailNotifications),
     };
 
     const { error } = await supabase
@@ -340,6 +355,19 @@ function Settings() {
             >
               Delete Account
             </button>
+          </div>
+        </div>
+
+        <div className="settings-section">
+          <h2>⌨ Keyboard Shortcuts</h2>
+
+          <div className="shortcuts-grid">
+            {SHORTCUTS.map((sc) => (
+              <div key={sc.key} className="shortcut-item">
+                <kbd className="shortcut-key">{sc.key}</kbd>
+                <span className="shortcut-desc">{sc.description}</span>
+              </div>
+            ))}
           </div>
         </div>
 

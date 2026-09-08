@@ -509,6 +509,10 @@
     min-width:140px;
 }
 
+.search-filter select.sort-select{
+    min-width:200px;
+}
+
 .search-filter input:focus,
 .search-filter select:focus{
     outline:none;
@@ -1244,6 +1248,38 @@ body[data-theme="dark"] .pending-status{
     color: var(--secondary);
     font-size: 14px;
     margin: 6px 0 0;
+}
+
+.shortcuts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.shortcut-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.shortcut-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 28px;
+    padding: 4px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.shortcut-desc {
+    font-size: 14px;
+    color: var(--text);
 }
 
 .settings-section.danger {

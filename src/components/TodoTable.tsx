@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { Task } from "../types/task";
 
 interface TodoTableProps {
@@ -25,6 +25,24 @@ function TodoTable({
   onAdd,
   loading = false,
 }: TodoTableProps) {
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("Medium");
+  const [category, setCategory] = useState("Personal");
+  const [dueDate, setDueDate] = useState("");
+  const [repeatType, setRepeatType] = useState("None");
+
+  const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
+  const selectAllRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (selectAllRef.current) {
+      selectAllRef.current.indeterminate =
+        selectedTasks.length > 0 && selectedTasks.length < tasks.length;
+    }
+  }, [selectedTasks, tasks]);
+
   const formatDate = (date: string | null) => {
     if (!date) return "-";
     return new Date(date).toLocaleDateString("en-US", {
@@ -34,13 +52,38 @@ function TodoTable({
     });
   };
 
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("Medium");
-  const [category, setCategory] = useState("Personal");
-  const [dueDate, setDueDate] = useState("");
-  const [repeatType, setRepeatType] = useState("None");
+  const toggleTaskSelection = (id: number) => {
+    setSelectedTasks((prev) =>
+      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedTasks.length === tasks.length) {
+      setSelectedTasks([]);
+    } else {
+      setSelectedTasks(tasks.map((t) => t.id));
+    }
+  };
+
+  const handleBulkComplete = () => {
+    selectedTasks.forEach((id) => {
+      const task = tasks.find((t) => t.id === id);
+      if (task) onComplete(task);
+    });
+    setSelectedTasks([]);
+  };
+
+  const handleBulkDelete = () => {
+    if (
+      !confirm(
+        `Delete ${selectedTasks.length} selected task(s)? This action cannot be undone.`
+      )
+    )
+      return;
+    selectedTasks.forEach((id) => onDelete(id));
+    setSelectedTasks([]);
+  };
 
   function resetForm() {
     setTitle("");
@@ -87,9 +130,49 @@ function TodoTable({
       </div>
 
       <div className="todo-table-container">
+        {selectedTasks.length > 0 && (
+          <div className="bulk-actions-bar">
+            <span className="selected-count">
+              {selectedTasks.length} selected
+            </span>
+            <div className="bulk-action-buttons">
+              <button
+                className="bulk-btn complete"
+                onClick={handleBulkComplete}
+                title="Mark selected as complete"
+              >
+                ✓ Complete
+              </button>
+              <button
+                className="bulk-btn delete"
+                onClick={handleBulkDelete}
+                title="Delete selected tasks"
+              >
+                ✕ Delete
+              </button>
+              <button
+                className="bulk-btn clear"
+                onClick={() => setSelectedTasks([])}
+                title="Clear selection"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        )}
+
         <table className="todo-table">
           <thead>
             <tr>
+              <th className="checkbox-header">
+                <input
+                  type="checkbox"
+                  className="select-all-checkbox"
+                  ref={selectAllRef}
+                  checked={tasks.length > 0 && selectedTasks.length === tasks.length}
+                  onChange={toggleSelectAll}
+                />
+              </th>
               <th>Title</th>
               <th>Priority</th>
               <th>Category</th>
@@ -101,7 +184,7 @@ function TodoTable({
           <tbody>
             {showAddForm && (
               <tr className="todo-add-row">
-                <td colSpan={6}>
+                <td colSpan={7}>
                   <form className="todo-add-form" onSubmit={handleSubmit}>
                     <div className="todo-form-row">
                       <input
@@ -178,6 +261,9 @@ function TodoTable({
               Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i} className="skeleton-row">
                   <td>
+                    <div className="skeleton skeleton-checkbox" />
+                  </td>
+                  <td>
                     <div className="skeleton skeleton-text" style={{ width: "80%" }} />
                   </td>
                   <td>
@@ -199,7 +285,7 @@ function TodoTable({
               ))
             ) : tasks.length === 0 && !showAddForm ? (
               <tr className="empty-row">
-                <td colSpan={6}>
+                <td colSpan={7}>
                   <div className="todo-empty-state">
                     <div className="todo-empty-icon">📋</div>
                     <h3>No Tasks Yet</h3>
@@ -215,11 +301,19 @@ function TodoTable({
                   new Date(task.due_date) < new Date();
 
                 return (
-                  <tr
-                    key={task.id}
-                    className={`todo-row ${task.completed ? "completed" : ""}`}
-                  >
-                    <td className="task-title-cell">
+                   <tr
+                     key={task.id}
+                     className={`todo-row ${task.completed ? "completed" : ""}`}
+                   >
+                     <td className="checkbox-cell">
+                       <input
+                         type="checkbox"
+                         className="task-checkbox"
+                         checked={selectedTasks.includes(task.id)}
+                         onChange={() => toggleTaskSelection(task.id)}
+                       />
+                     </td>
+                     <td className="task-title-cell">
                       <div className="task-title-content">
                         <span className="task-title-text">{task.title}</span>
                         {task.description && (

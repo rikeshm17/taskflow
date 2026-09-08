@@ -10,9 +10,11 @@ interface TaskListProps {
   search: string;
   filter: string;
   categoryFilter: string;
+  sort: string;
   onSearchChange: (value: string) => void;
   onFilterChange: (value: string) => void;
   onCategoryFilterChange: (value: string) => void;
+  onSortChange: (value: string) => void;
   loading?: boolean;
 }
 
@@ -24,9 +26,11 @@ function TaskList({
   search,
   filter,
   categoryFilter,
+  sort,
   onSearchChange,
   onFilterChange,
   onCategoryFilterChange,
+  onSortChange,
   loading = false,
 }: TaskListProps) {
   return (
@@ -35,9 +39,11 @@ function TaskList({
         search={search}
         filter={filter}
         categoryFilter={categoryFilter}
+        sort={sort}
         onSearchChange={onSearchChange}
         onFilterChange={onFilterChange}
         onCategoryFilterChange={onCategoryFilterChange}
+        onSortChange={onSortChange}
       />
 
       <div className="task-header">

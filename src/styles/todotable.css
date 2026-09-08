@@ -5,10 +5,83 @@
 }
 
 .todo-table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.bulk-actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    background: rgba(252, 86, 60, 0.08);
+    border: 1px solid rgba(252, 86, 60, 0.25);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.bulk-action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.bulk-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.bulk-btn.complete {
+    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(46, 204, 113, 0.3);
+}
+
+.bulk-btn.delete {
+    background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(229, 57, 53, 0.3);
+}
+
+.bulk-btn.clear {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.bulk-btn:hover {
+    transform: translateY(-1px);
+}
+
+.checkbox-header,
+.checkbox-cell {
+    width: 44px;
+    text-align: center;
+}
+
+.select-all-checkbox,
+.task-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--accent);
+}
+
+.skeleton-checkbox {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    margin: 0 auto;
 }
 
 .todo-table-header h2 {

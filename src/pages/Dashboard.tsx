@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../services/supabase";
+import { useTheme } from "../context/ThemeContext";
 import {
   addTask,
   getTasks,
@@ -27,7 +28,8 @@ import "../styles/todotable.css";
 import "../styles/tags.css";
 import "../styles/focustimer.css";
 
-function Dashboard() {
+  function Dashboard() {
+  const { toggleTheme } = useTheme();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState("");
@@ -36,6 +38,7 @@ function Dashboard() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [categoryFilter, setCategoryFilter] = useState("All Categories");
+  const [sort, setSort] = useState("newest");
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [userEmail, setUserEmail] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -44,6 +47,24 @@ function Dashboard() {
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   const scrollRef = { current: 0 };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        if (editingTask) {
+          handleCancelEdit();
+        }
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "d") {
+        e.preventDefault();
+        toggleTheme();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingTask, toggleTheme]);
 
   const loadTasks = useCallback(async () => {
     scrollRef.current = window.scrollY;
@@ -333,6 +354,31 @@ function Dashboard() {
       task.category === categoryFilter;
 
     return matchesSearch && matchesFilter && matchesCategory;
+  }).sort((a, b) => {
+    const priorityRank: Record<string, number> = {
+      Urgent: 4,
+      High: 3,
+      Medium: 2,
+      Low: 1,
+    };
+
+    switch (sort) {
+      case "newest":
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      case "oldest":
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      case "due-soon": {
+        const da = a.due_date ? new Date(a.due_date).getTime() : Infinity;
+        const db = b.due_date ? new Date(b.due_date).getTime() : Infinity;
+        return da - db;
+      }
+      case "priority":
+        return (priorityRank[b.priority] || 0) - (priorityRank[a.priority] || 0);
+      case "title-asc":
+        return a.title.localeCompare(b.title);
+      default:
+        return 0;
+    }
   });
 
   return (
@@ -417,9 +463,11 @@ function Dashboard() {
         search={search}
         filter={filter}
         categoryFilter={categoryFilter}
+        sort={sort}
         onSearchChange={setSearch}
         onFilterChange={setFilter}
         onCategoryFilterChange={setCategoryFilter}
+        onSortChange={setSort}
         loading={loading}
       />
 
