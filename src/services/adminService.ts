@@ -37,3 +37,13 @@ export async function deleteAnyTask(id: number): Promise<{ data: Task[] | null; 
     .eq("id", id);
   return { data: (data as Task[] | null) ?? null, error: error as PostgrestError | null };
 }
+
+export async function deleteMultipleTasks(
+  ids: number[]
+): Promise<{ data: Task[] | null; error: PostgrestError | null }> {
+  const { data, error } = await supabase
+    .from("tasks")
+    .delete()
+    .in("id", ids);
+  return { data: (data as Task[] | null) ?? null, error: error as PostgrestError | null };
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   FaUsers,
@@ -14,6 +14,7 @@ import {
   getAllTasks,
   updateUserRole,
   deleteAnyTask,
+  deleteMultipleTasks,
 } from "../services/adminService";
 import { getTotalFocusTime } from "../services/pomodoroService";
 import Navbar from "../components/Navbar";
@@ -26,16 +27,29 @@ import "../styles/admin.css";
 function AdminDashboard() {
   const [users, setUsers] = useState<Profile[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<number[]>([]);
   const [search, setSearch] = useState("");
   const [taskSearch, setTaskSearch] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [totalFocusTime, setTotalFocusTime] = useState(0);
+  const selectAllRef = useRef<HTMLInputElement>(null);
+
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(taskSearch.toLowerCase())
+  );
 
   useEffect(() => {
     loadData();
     loadUserEmail();
     loadFocusTime();
   }, []);
+
+  useEffect(() => {
+    if (selectAllRef.current) {
+      selectAllRef.current.indeterminate =
+        selectedTasks.length > 0 && selectedTasks.length < filteredTasks.length;
+    }
+  }, [selectedTasks, filteredTasks]);
 
   async function loadUserEmail() {
     const {
@@ -63,6 +77,33 @@ function AdminDashboard() {
     setUsers(usersData ?? []);
     setTasks(tasksData ?? []);
   }
+
+  const toggleTaskSelection = (id: number) => {
+    setSelectedTasks((prev) =>
+      prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedTasks.length === filteredTasks.length) {
+      setSelectedTasks([]);
+    } else {
+      setSelectedTasks(filteredTasks.map((t) => t.id));
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedTasks.length === 0) return;
+    if (
+      !confirm(
+        `Delete ${selectedTasks.length} selected task(s)? This action cannot be undone.`
+      )
+    )
+      return;
+    await deleteMultipleTasks(selectedTasks);
+    setSelectedTasks([]);
+    loadData();
+  };
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((t) => t.completed).length;
@@ -259,10 +300,44 @@ function AdminDashboard() {
           onChange={(e) => setTaskSearch(e.target.value)}
         />
 
+        {selectedTasks.length > 0 && (
+          <div className="bulk-actions-bar">
+            <span className="selected-count">
+              {selectedTasks.length} selected
+            </span>
+            <div className="bulk-action-buttons">
+              <button
+                className="delete-selected-btn"
+                onClick={handleDeleteSelected}
+              >
+                Delete Selected
+              </button>
+              <button
+                className="clear-selection-btn"
+                onClick={() => setSelectedTasks([])}
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="admin-table-wrapper">
           <table className="admin-table">
             <thead>
               <tr>
+                <th className="checkbox-header">
+                  <input
+                    type="checkbox"
+                    className="select-all-checkbox"
+                    ref={selectAllRef}
+                    checked={
+                      filteredTasks.length > 0 &&
+                      selectedTasks.length === filteredTasks.length
+                    }
+                    onChange={toggleSelectAll}
+                  />
+                </th>
                 <th>Task</th>
                 <th>Priority</th>
                 <th>Status</th>
@@ -272,50 +347,56 @@ function AdminDashboard() {
             </thead>
 
             <tbody>
-              {tasks
-                .filter((task) =>
-                  task.title
-                    .toLowerCase()
-                    .includes(taskSearch.toLowerCase())
-                )
-                .map((task) => (
-                  <tr key={task.id}>
-                    <td>
-                      <div className="task-title-cell">
-                        {task.title}
-                      </div>
-                    </td>
+              {filteredTasks.map((task) => (
+                <tr key={task.id}>
+                  <td className="checkbox-cell">
+                    <input
+                      type="checkbox"
+                      className="task-checkbox"
+                      checked={selectedTasks.includes(task.id)}
+                      onChange={() => toggleTaskSelection(task.id)}
+                    />
+                  </td>
 
-                    <td>
-                      <span className={`priority-badge ${task.priority.toLowerCase()}`}>
-                        {task.priority}
-                      </span>
-                    </td>
+                  <td>
+                    <div className="task-title-cell">
+                      {task.title}
+                    </div>
+                  </td>
 
-                    <td>
-                      <span className={`status-badge ${task.completed ? "completed" : "pending"}`}>
-                        {task.completed ? "Completed" : "Pending"}
-                      </span>
-                    </td>
+                  <td>
+                    <span className={`priority-badge ${task.priority.toLowerCase()}`}>
+                      {task.priority}
+                    </span>
+                  </td>
 
-                    <td>{task.category}</td>
+                  <td>
+                    <span className={`status-badge ${task.completed ? "completed" : "pending"}`}>
+                      {task.completed ? "Completed" : "Pending"}
+                    </span>
+                  </td>
 
-                    <td>
-                      <button
-                        className="delete-btn"
-                        onClick={async () => {
-                          if (confirm("Delete this task? This action cannot be undone.")) {
-                            await deleteAnyTask(task.id);
-                            loadData();
-                          }
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </td>
+                  <td>{task.category}</td>
 
-                  </tr>
-                ))}
+                  <td>
+                    <button
+                      className="delete-btn"
+                      onClick={async () => {
+                        if (confirm("Delete this task? This action cannot be undone.")) {
+                          await deleteAnyTask(task.id);
+                          setSelectedTasks((prev) =>
+                            prev.filter((t) => t !== task.id)
+                          );
+                          loadData();
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

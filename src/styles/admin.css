@@ -436,3 +436,74 @@
         justify-content: center;
     }
 }
+
+.bulk-actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    margin: 16px 0;
+    background: rgba(252, 86, 60, 0.1);
+    border: 1px solid rgba(252, 86, 60, 0.3);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+.selected-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: #FC563C;
+}
+
+.bulk-action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.delete-selected-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.25s;
+}
+
+.delete-selected-btn:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.clear-selection-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.clear-selection-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.checkbox-header,
+.checkbox-cell {
+    width: 50px;
+    text-align: center;
+}
+
+.select-all-checkbox,
+.task-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #FC563C;
+}

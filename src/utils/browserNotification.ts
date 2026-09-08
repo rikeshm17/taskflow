@@ -21,7 +21,7 @@ export function showBrowserNotification(
   try {
     new Notification(title, {
       body,
-      icon: "/favicon.ico",
+       icon: "/favicon.svg",
     });
   } catch {
     new Notification(title, {
