@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import "./styles/global.css";
@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ThemeProvider>
       <AuthProvider>
         <RoleProvider>
-          <BrowserRouter>
+          <HashRouter>
             <App />
 
             <Toaster
@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 duration: 2500,
               }}
             />
-          </BrowserRouter>
+          </HashRouter>
         </RoleProvider>
       </AuthProvider>
     </ThemeProvider>

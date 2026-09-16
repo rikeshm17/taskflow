@@ -15,7 +15,6 @@ export default defineConfig({
 
             includeAssets: [
               "favicon.svg",
-              "favicon.ico",
               "icon-192.png",
               "icon-512.png",
             ],
