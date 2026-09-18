@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { supabase } from "../services/supabase";
 import { useTheme } from "../context/ThemeContext";
 import {
@@ -17,6 +17,7 @@ import ProgressBar from "../components/ProgressBar";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 import TaskChart from "../components/TaskChart";
+import Pagination from "../components/Pagination";
 import type { Task } from "../types/task";
 import "../styles/dashboard.css";
 import ProductivityStats from "../components/ProductivityStats";
@@ -27,6 +28,7 @@ import FocusTimer from "../components/FocusTimer";
 import "../styles/todotable.css";
 import "../styles/tags.css";
 import "../styles/focustimer.css";
+import "../styles/pagination.css";
 
   function Dashboard() {
   const { toggleTheme } = useTheme();
@@ -45,6 +47,8 @@ import "../styles/focustimer.css";
   const [repeatType, setRepeatType] = useState("None");
   const [category, setCategory] = useState("Personal");
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const TASKS_PER_PAGE = 10;
 
   const scrollRef = { current: 0 };
 
@@ -381,6 +385,17 @@ import "../styles/focustimer.css";
     }
   });
 
+  const totalPages = Math.ceil(filteredTasks.length / TASKS_PER_PAGE);
+
+  const paginatedTasks = useMemo(() => {
+    const start = (currentPage - 1) * TASKS_PER_PAGE;
+    return filteredTasks.slice(start, start + TASKS_PER_PAGE);
+  }, [filteredTasks, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filter, categoryFilter, sort]);
+
   return (
     <div className="dashboard">
       <Navbar
@@ -442,7 +457,7 @@ import "../styles/focustimer.css";
       )}
 
       <TaskList
-        filteredTasks={filteredTasks}
+        filteredTasks={paginatedTasks}
         onComplete={handleCompleteTask}
         onEdit={(task) => {
           setEditingTask(task);
@@ -471,8 +486,14 @@ import "../styles/focustimer.css";
         loading={loading}
       />
 
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
+
       <TodoTable
-        tasks={filteredTasks}
+        tasks={paginatedTasks}
         onComplete={handleCompleteTask}
         onEdit={(task) => {
           setEditingTask(task);
@@ -492,6 +513,12 @@ import "../styles/focustimer.css";
         onDelete={handleDeleteTask}
         onAdd={handleAddTaskFromTable}
         loading={loading}
+      />
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
       />
 
       <Footer />
